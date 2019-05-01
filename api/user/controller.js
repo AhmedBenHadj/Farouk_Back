@@ -35,15 +35,24 @@ async function add(req,res){
     return res.status(400).end();
 }
 
-async function facebookOAuth(req,res,next){
-    console.log('Got here') ;
-    if(req){
-        //console.log(req);
-        const token = signToken(req.user);
-        res.status(200).json({ token });
+async function deleteUser(req,res){
+    let id = req.query.id; // Get["id"]
+    const user = await users.deleteById(id);
+    if(user){
+        return res.status(200).send();
     }
-    res.status(405).end();
+    return res.status(404).send();
+}
 
+async function findUser(req,res){
+    let cin = req.query.cin; // Get ["cin"]
+
+    const user=await users.findByCin(cin);
+
+    if(user){
+        return res.status(200).send(user);
+    }
+    return res.status(404);
 }
 
 function secret(req,res,next){
@@ -64,7 +73,7 @@ async function signUp(req,res,next){
 }
 
 async function signIn(req,res,next){
-    //req.body = _validateSchemaLogin(req.body);
+    req.body = _validateSchemaLogin(req.body);
     console.log("req :",req);
     if(req){
         const token = signToken(req.user);
@@ -76,7 +85,8 @@ async function signIn(req,res,next){
 
 module.exports = {
     add,
-    facebookOAuth,
+    deleteUser,
+    findUser,
     secret,
     signIn,
     signUp

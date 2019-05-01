@@ -8,7 +8,7 @@ var logger = require('chpr-logger');
 const { configure } = require('./config/express');
 
 var mongoose = require('mongoose');
-const url ="mongodb://localhost:27017/pidev";
+const url ="mongodb://localhost:27017/steg";
 
 let app;
 let server;
