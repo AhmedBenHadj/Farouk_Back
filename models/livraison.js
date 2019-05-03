@@ -3,29 +3,27 @@ const mongoose = require('mongoose');
 const Joi = require('../lib/joi');
 const dateLib = require('../lib/date');
 const { ObjectId } = require('mongoose').Types;
+const {type_produits} = require("../constants");
+const commonde = require("./commande");
 
 const livraisonSchema =  mongoose.Schema({
-    code_livraison:String,
     date:Date,
-    quantite:String,
+    quantite:Number,
     type_produit:String,
     client:String,
     commande_id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Commande'
+        ref:'Commande',
     }
 });
 
 const joiLivraisonSchema = Joi.object({
     _id: Joi.objectId(),
-    code_livraison:Joi.string().required(),
-    quantite:Joi.string().required(),
-    type_produit:Joi.string().required(),
+    quantite:Joi.number().positive().required(),
+    type_produit:Joi.valid(type_produits).required(),
     client:Joi.string().required(),
     date: Joi.date().default(() => dateLib.getDate(), 'time of creation'),
     commande_id:Joi.objectId().required()
-
-
 });
 
 function _validateSchema(livraison1) {
@@ -40,6 +38,11 @@ async function insertOne(livraison){
     const livraison_validate = _validateSchema(livraison);
     if(livraison_validate){
         const livraison_returned = await collection().insertMany(livraison_validate);
+        const commonde_returned = await commonde.findOneById(ObjectId(livraison_returned[0].commande_id));
+        if(commonde_returned){
+            await commonde.IncOne(commonde_returned._id,{quantite_fournie:livraison_returned[0].quantite});
+            await commonde.CheckAndUpdate(commonde_returned._id);
+        }
         return livraison_returned ;
     }
     return null;
@@ -67,8 +70,6 @@ async function findOneById(livraisonId, projections = {}) {
 
 async function findByCodeLivraison(code_livraison){
     return await  collection().find({code_livraison:code_livraison});
-
-
 }
 
 

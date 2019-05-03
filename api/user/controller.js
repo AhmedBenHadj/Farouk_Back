@@ -72,14 +72,14 @@ async function signUp(req,res,next){
     res.status(500).end();
 }
 
-async function signIn(req,res,next){
+async function signIn(req,res){
     req.body = _validateSchemaLogin(req.body);
     console.log("req :",req);
     if(req){
         const token = signToken(req.user);
-        res.status(200).json({ token });
+        return res.status(200).json({ token });
     }
-    res.status(405).end();
+    return res.status(405).end();
 }
 
 

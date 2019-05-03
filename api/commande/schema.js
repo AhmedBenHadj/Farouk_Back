@@ -1,11 +1,10 @@
 'use strict';
-
+const {type_produits} = require("../../constants");
 const Joi = require('../../lib/joi');
 
 const ValidatorSchemaOfBody = Joi.object({
-    code_commande:Joi.string().required(),
-    quantite:Joi.string().required(),
-    type_produit:Joi.string().required(),
+    quantite:Joi.number().positive().required(),
+    type_produit:Joi.valid(type_produits).required(),
     user_id:Joi.objectId().required()
 });
 

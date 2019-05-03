@@ -89,22 +89,23 @@ async function IncOne(userId, updatedFields) {
     return result;
 }
 async function findOrCreateLocal(req){
-    const {firstname,lastname,login,password} = req.body ;
-    const foundUser = await collection().findOne({login:login});
+    const {prenom,nom,mail,cin,password} = req.body ;
+    const foundUser = await collection().findOne({mail:mail});
     if(foundUser){
         return null ;
     }
     const newUser = await insertOne({
-        firstname:firstname,
-        lastname:lastname ,
-        login:login,
-        password:password
+        prenom:prenom,
+        nom:nom ,
+        mail:mail,
+        password:password,
+        cin:cin
     });
     return newUser ;
 }
 
 async function findOneByLogin(userEmail){
-    const user = await collection().findOne({login:userEmail});
+    const user = await collection().findOne({mail:userEmail});
     return user ;
 }
 

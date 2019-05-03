@@ -14,7 +14,7 @@ const ValidatorSchemaOfBody = Joi.object({
 });
 
 const ValidatorForLogin = Joi.object({
-    login:Joi.string().required(),
+    username:Joi.string().email().required(),
     password:Joi.string().required()
 });
 
