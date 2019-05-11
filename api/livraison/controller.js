@@ -30,6 +30,14 @@ async function findLivraison(req,res){
 
 }
 
+async function getAllLivraison(req,res){
+    const _livraisons = await livraisons.find({});
+    if(_livraisons){
+        return res.status(200).send(_livraisons);
+    }
+    return res.stat(404).end() ;
+}
+
 async function deleteLivraison(req,res){
     let code_livraison = req.query.code_commande; // Get["code de la livraison"]
     const livraison = await livraisons.deleteById(code_livraison);
@@ -44,5 +52,6 @@ async function deleteLivraison(req,res){
 module.exports = {
     addLivraison,
     findLivraison,
-    deleteLivraison
+    deleteLivraison,
+    getAllLivraison
 };
